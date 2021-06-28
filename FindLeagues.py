@@ -58,26 +58,53 @@ def getLeagues(user_id):
 stopping_condition = True
 iteration_counter = 0
 
-while stopping_condition & (iteration_counter < 5):
+while stopping_condition & (iteration_counter < 6):
 
+	print("\nIteration " + str(iteration_counter) + ":")
 
-
+	print("\nFinding new users...")
 	leagues_to_check = league_set.difference(checked_league_set)
 	for league in leagues_to_check:
+		user_set_before = len(user_set)
 		user_set.update(getUsers(league))
 		checked_league_set.update(league)
+
+		if (len(user_set) - user_set_before) > 0:
+			print("Found " + str(len(user_set) - user_set_before))
 		time.sleep(.1)
 
+
+	print("\nFinding new leagues...")
 	users_to_check = user_set.difference(checked_user_set)
 	for user in users_to_check:
+		league_set_before = len(league_set)
 		league_set.update(getLeagues(user))
 		checked_user_set.update(user)
+
+		if (len(league_set) - league_set_before) > 0:
+			print("Found " + str(len(league_set) - league_set_before))
+
+		#stop searching if the league set is large enough
+		if len(league_set) > 2000:
+			break
+
 		time.sleep(.1)
 
-	
+	print("\nNumber of leagues after iteration " + str(iteration_counter) + ": " + str(len(league_set)) + "\n")
 	iteration_counter += 1
+
+	if len(league_set) > 2000:
+		stopping_condition = False
 
 
 print(league_set)
 print(user_set)
+
+#write list of leagues to file
+with open('LeagueList.txt', 'w') as f:
+	for league in league_set:
+		f.write(league + '\n')
+
+
+
  
