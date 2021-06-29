@@ -40,3 +40,7 @@ Number of leagues after iteration 5: 2003
 ```
 
 With a sizable list of real league IDs, I could build the dataset I needed for analysis. For each of those leagues, I needed to know, for each team, which position they drafted in each round of the league's draft. 
+
+| user_id   | league_id |
+| --------- | --------- |
+|  string   | Content Cell  |
