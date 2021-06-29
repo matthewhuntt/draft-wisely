@@ -39,7 +39,13 @@ Found 18
 Number of leagues after iteration 5: 2003
 ```
 
-With a sizable list of real league IDs, I could build the dataset I needed for analysis. For each of those leagues, I needed to know, for each team, which position they drafted in each round of the league's draft. 
+With a sizable list of real league IDs, I could build the dataset I needed for analysis. For each of those leagues, I needed to know, for each team, which position they drafted in each round of the league's draft, in addition to some league parameters for filtering and segmentation. It was important to start with a larger-than-needed leagues of leagues because many will be filtered out. Namely, those that do not meet the following conditions:
+
+  1. 1 QB roster slot 
+  2. The draft is at least 12 rounds
+  3. Each player has a pick in the first 12 rounds
+
+
 
 | user_id   | league_id |
 | --------- | --------- |
