@@ -1,25 +1,4 @@
 
-"""
-Pseduocode
-
-league_list <- [<init_league>]
-checked_league_list <- []
-user_list <- []
-checked_user_list <- []
-
-while (no change in league list or user list between two consective loops):
-
-	leagues_to_check = league_list - checked_league_list
-	for league in leagues_to_check:
-		user_list.append(all users in league)
-		checked_league_list.append(league)
-
-	users_to_check = user_list - checked_user_list
-	for user in users_to_check:
-		league_list.append(all leagues for user)
-		checked_users.append(users)
-"""
-
 import urllib.request
 import json
 import time
@@ -42,19 +21,20 @@ def getUsers(league_id):
 	user_list = [i['user_id'] for i in owners]
 	return(user_list)
 
-def getLeagues(user_id):
+def getLeagues(user_id, year):
 	"""
-	Given a user_id, fetch all leagues in which the user is a member
+	Given a user_id, fetch all leagues in which the user is a member for the past 3 seasons
 	Return a list of all leagues
 	"""
 
 	#get users
-	with urllib.request.urlopen("https://api.sleeper.app/v1/user/" + user_id + "/leagues/nfl/2020") as url:
+	with urllib.request.urlopen("https://api.sleeper.app/v1/user/" + user_id + "/leagues/nfl/" + year) as url:
 	    leagues = json.loads(url.read().decode())
 	
 	league_list = [i['league_id'] for i in leagues]
 	return(league_list)
 
+#initialize whil loop conditions
 stopping_condition = True
 iteration_counter = 0
 
@@ -78,14 +58,16 @@ while stopping_condition & (iteration_counter < 6):
 	users_to_check = user_set.difference(checked_user_set)
 	for user in users_to_check:
 		league_set_before = len(league_set)
-		league_set.update(getLeagues(user))
+		league_set.update(getLeagues(user, '2018'))
+		league_set.update(getLeagues(user, '2019'))
+		league_set.update(getLeagues(user, '2020'))
 		checked_user_set.update(user)
 
 		if (len(league_set) - league_set_before) > 0:
 			print("Found " + str(len(league_set) - league_set_before))
 
 		#stop searching if the league set is large enough
-		if len(league_set) > 2000:
+		if len(league_set) > 5000:
 			break
 
 		time.sleep(.1)
@@ -93,12 +75,12 @@ while stopping_condition & (iteration_counter < 6):
 	print("\nNumber of leagues after iteration " + str(iteration_counter) + ": " + str(len(league_set)) + "\n")
 	iteration_counter += 1
 
-	if len(league_set) > 2000:
+	if len(league_set) > 5000:
 		stopping_condition = False
 
 
-print(league_set)
-print(user_set)
+# print(league_set)
+# print(user_set)
 
 #write list of leagues to file
 with open('LeagueList.txt', 'w') as f:
